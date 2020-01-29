@@ -17,15 +17,16 @@ import java.text.NumberFormat;
 import java.util.List;
 
 import dev.jcrystal.crystalfash.R;
-import dev.jcrystal.crystalfash.models.Product;
 import dev.jcrystal.crystalfash.ui.product.ProductActivity;
+import jcrystal.mobile.entities.ProductNormal;
+import jcrystal.mobile.entities.enums.Categories;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHolder> {
     private Context mContext ;
-    private List<Product> mData ;
+    private List<ProductNormal> mData ;
 
 
-    public ProductAdapter(Context mContext, List<Product> mData) {
+    public ProductAdapter(Context mContext, List<ProductNormal> mData) {
         this.mContext = mContext;
         this.mData = mData;
     }
@@ -39,25 +40,29 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
         return new MyViewHolder(view);
     }
 
+    public void updateList(List<ProductNormal> mData){
+        this.mData = mData;
+    }
+
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-        holder.txtName.setText(mData.get(position).getName());
-        holder.txtCategory.setText(mData.get(position).getCategory());
+        holder.txtName.setText(mData.get(position).name());
+        holder.txtCategory.setText(mData.get(position).category().name());
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        holder.txtPrice.setText(formatter.format(mData.get(position).getPrice()));
-        holder.txtOldPrice.setText(formatter.format(mData.get(position).getOldPrice()));
+        holder.txtPrice.setText(formatter.format(mData.get(position).price()));
+        holder.txtOldPrice.setText(formatter.format(mData.get(position).oldPrice()));
 
-        Picasso.get().load(mData.get(position).getImage()).into(holder.imgProduct);
+        Picasso.get().load(mData.get(position).image()).into(holder.imgProduct);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Intent intent = new Intent(mContext, ProductActivity.class);
 
-                intent.putExtra("idProduct",mData.get(position).getId());
+                intent.putExtra("idProduct",mData.get(position).id());
 
                 mContext.startActivity(intent);
 

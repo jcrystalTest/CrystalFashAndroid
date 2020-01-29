@@ -16,6 +16,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import dev.jcrystal.crystalfash.R;
+import jcrystal.mobile.net.controllers.ManagerCart;
+import jcrystal.mobile.net.controllers.ManagerContact;
 
 public class ContactFragment extends Fragment {
 
@@ -33,11 +35,21 @@ public class ContactFragment extends Fragment {
         btnContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ManagerContact.contact(getActivity(),editName.getText().toString(), editEmail.getText().toString(), editMessage.getText().toString(), ()->{
+                    Toast.makeText(getContext(), "Message send to server", Toast.LENGTH_LONG).show();
+                    clearData();
+                }, error -> {
+                    Toast.makeText(getContext(), "Error", Toast.LENGTH_LONG).show();
+                });
 
-                //TODO send message
-                Toast.makeText(getContext(), "Message send to server", Toast.LENGTH_LONG).show();
             }
         });
         return root;
+    }
+
+    private void clearData() {
+        editName.getText().clear();
+        editEmail.getText().clear();
+        editMessage.getText().clear();
     }
 }

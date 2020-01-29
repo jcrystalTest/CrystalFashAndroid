@@ -19,13 +19,15 @@ import android.widget.Toast;
 import java.text.NumberFormat;
 
 import dev.jcrystal.crystalfash.R;
-import dev.jcrystal.crystalfash.models.Product;
+import jcrystal.mobile.entities.ProductNormal;
+import jcrystal.mobile.entities.enums.Categories;
+import jcrystal.mobile.net.controllers.ManagerProduct;
 
 public class ProductActivity extends AppCompatActivity {
     private TextView txtName,txtDescription,txtCategory, txtPrice, txtOldPrice;
     private ImageView img;
     Button btnAdd2Cart;
-    private Product product;
+    private ProductNormal product;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,18 +46,20 @@ public class ProductActivity extends AppCompatActivity {
         Intent intent = getIntent();
         long idProduct = intent.getExtras().getLong("idProduct");
 
-        //TODO get product details from id
-        product = new Product("Sweater 1", "MEN", "soft sweater", "https://imgur.com/OqgIsqf.jpg", 13, 28);
 
-        // Setting values
+        ManagerProduct.getProductById(this,idProduct, product->{
+            this.product = product;
+            txtName.setText(product.name());
+            txtDescription.setText(product.description());
+            txtCategory.setText(Categories.fromId(product.category().id).name());
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            txtPrice.setText(formatter.format(product.price()));
+            txtOldPrice.setText(formatter.format(product.oldPrice()));
+            Picasso.get().load(product.image()).into(img);
+        }, error->{
+            Toast.makeText(getApplicationContext(),error.mensaje,Toast.LENGTH_SHORT);
+        });
 
-        txtName.setText(product.getName());
-        txtDescription.setText(product.getDescription());
-        txtCategory.setText(product.getCategory());
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        txtPrice.setText(formatter.format(product.getPrice()));
-        txtOldPrice.setText(formatter.format(product.getOldPrice()));
-        Picasso.get().load(product.getImage()).into(img);
 
         btnAdd2Cart.setOnClickListener(new View.OnClickListener() {
             @Override

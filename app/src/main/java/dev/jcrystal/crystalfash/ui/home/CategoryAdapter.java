@@ -10,18 +10,26 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import dev.jcrystal.crystalfash.R;
+import jcrystal.mobile.entities.enums.Categories;
+import jcrystal.mobile.net.controllers.ManagerProduct;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder> {
     private Context mContext ;
     private List<String> mData ;
+    private HomeFragment fragment;
 
-    public CategoryAdapter(Context mContext, List<String> mData) {
+    public CategoryAdapter(Context mContext, List<String> mData, HomeFragment fragment) {
         this.mContext = mContext;
+        this.mData = mData;
+        this.fragment = fragment;
+    }
+    public void updateList(List<String> mData){
         this.mData = mData;
     }
     @NonNull
@@ -39,8 +47,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO update product list
-                Toast.makeText(mContext,  holder.txtCategory.getText(), Toast.LENGTH_LONG).show();
+                Categories category = Categories.KIDS;
+                if (holder.txtCategory.getText().toString().equals(Categories.MEN.getName())){
+                    category = Categories.MEN;
+                }else if (holder.txtCategory.getText().toString().equals(Categories.WOMEN.getName())){
+                    category = Categories.WOMEN;
+                }
+                fragment.updateProductsByCategory(category);
+
             }
         });
     }
